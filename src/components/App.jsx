@@ -1,19 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const App = () => {
 
-    const [playlist, setPlaylist] = useState(
-        [
-            { "id": 1, "category": "game", "name": "Mario Castle", "url": "files/mario/songs/castle.mp3" },
-            { "id": 2, "category": "game", "name": "Mario Star", "url": "files/mario/songs/hurry-starman.mp3" },
-            { "id": 3, "category": "game", "name": "Mario Overworld", "url": "files/mario/songs/overworld.mp3" },
-            { "id": 4, "category": "game", "name": "Mario Stage 1", "url": "files/mario/songs/stage1.mp3" },
-            { "id": 5, "category": "game", "name": "Mario Stage 2", "url": "files/mario/songs/stage2.mp3" },
-            { "id": 6, "category": "game", "name": "Mario Star", "url": "files/mario/songs/starman.mp3" },
-        ])
+    const [playlist, setPlaylist] = useState([])
 
     const [isPlaying, setIsPlaying] = useState(false)
     const [activeSong, setActiveSong] = useState(null)
+
+
+
+    useEffect(() => {
+        getSongs('https://assets.breatheco.de/apis/sound/songs')
+        return () => {
+        }
+    }, [])
+
+    const getSongs = (url = "", options = {}) => {
+        fetch(url, options)
+            .then((resp) => {
+                return resp.json()
+            })
+            .then((data) => {
+                setPlaylist(data)
+            })
+    }
+
 
     let player = useRef()
 
@@ -45,8 +56,11 @@ const App = () => {
 
     return (
         <>
+            <div id="contenedor-titulo">
+                <h1 id="titulo">Retro Player</h1>
+            </div>
             <div id='contenedor'>
-                <ul>
+                <ul id="lista">
                     {
                         playlist.length > 0 ?
                             playlist.map((elemento, index) =>
